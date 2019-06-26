@@ -3,8 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import QRCode from '../components/QRCode'
 import { findPartyById } from '../utils/find'
-import { randomBase64 } from '../utils/random'
-import encodeVotes from '../encodeVotes'
+import generateQRCodeString from '../encodeVotesForSBB'
 
 import {
   Candidate,
@@ -155,17 +154,102 @@ const YesNoContestResult = (props: {
     <NoSelection />
   )
 
+const keyData = new Uint8Array([
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+])
+
+const authKeyData = new Uint8Array([
+  70,
+  114,
+  111,
+  109,
+  32,
+  82,
+  117,
+  115,
+  115,
+  105,
+  97,
+  32,
+  119,
+  105,
+  116,
+  104,
+  32,
+  76,
+  111,
+  118,
+  101,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+])
+
 interface State {
   showConfirmModal: boolean
+  qrCodeDataString: string
 }
 
 class SummaryPage extends React.Component<RouteComponentProps, State> {
   public static contextType = BallotContext
   public state: State = {
     showConfirmModal: false,
+    qrCodeDataString: 'default',
   }
   public componentDidMount = () => {
     window.addEventListener('afterprint', this.resetBallot)
+
+    generateQRCodeString(
+      this.context.contests,
+      this.context.votes,
+      1, // FIXME i neeed to be a seunce number not a constant
+      Date.now(),
+      keyData,
+      authKeyData
+    ).then(value => {
+      this.setState({
+        qrCodeDataString: value,
+      })
+    })
   }
   public componentWillUnmount = () => {
     window.removeEventListener('afterprint', this.resetBallot)
@@ -191,7 +275,6 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
   }
   public render() {
     const {
-      ballotStyleId,
       contests,
       election: {
         seal,
@@ -203,14 +286,11 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
         date,
         bmdConfig,
       },
-      precinctId,
       votes,
     } = this.context
     const { showHelpPage, showSettingsPage } = bmdConfig
 
-    const encodedVotes: string = encodeVotes(contests, votes)
-
-    const serialNumber: string = randomBase64(16)
+    // const encodedVotes: string = encodeVotes(contests, votes)
 
     return (
       <React.Fragment>
@@ -304,25 +384,7 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
               </p>
             </Prose>
             <QRCodeContainer>
-              <QRCode
-                value={`${ballotStyleId}.${precinctId}.${encodedVotes}.${serialNumber}`}
-              />
-              <div>
-                <div>
-                  <div>
-                    <div>Ballot Style</div>
-                    <strong>{ballotStyleId}</strong>
-                  </div>
-                  <div>
-                    <div>Precinct Number</div>
-                    <strong>{precinctId}</strong>
-                  </div>
-                  <div>
-                    <div>Serial Number</div>
-                    <strong>{serialNumber}</strong>
-                  </div>
-                </div>
-              </div>
+              <QRCode value={`${this.state.qrCodeDataString}`} />
             </QRCodeContainer>
           </Header>
           <Content>
