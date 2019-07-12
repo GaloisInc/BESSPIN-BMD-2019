@@ -11,6 +11,9 @@ import {
   Contest,
 } from './config/types'
 
+const TIMESTAMP_PADDING = '0000000' // 7 binary string 0's to prepend to the 41 bit binary string that is the current unix time in milliseconds so that the timestamp becomes a clean 6 bytes
+const zeroIV = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
 function isCandidateVote(vote: Vote): vote is CandidateVote {
   return Array.isArray(vote)
 }
@@ -29,7 +32,7 @@ function isCandidateContest(contest: Contest): contest is CandidateContest {
 
 function candidateWasVotedFor(queryCandidate: Candidate, vote: Vote): boolean {
   if (isCandidateVote(vote)) {
-    for (var candidate of vote) {
+    for (const candidate of vote) {
       if (candidate === queryCandidate) {
         return true
       }
@@ -45,10 +48,10 @@ function encodeVotesAsBinaryString(
   votes: VotesDict
 ): string {
   var binaryString = ''
-  for (var contest of contests) {
+  for (const contest of contests) {
     if (isCandidateContest(contest)) {
-      var vote = votes[contest.id]
-      for (var candidate of contest.candidates) {
+      const vote = votes[contest.id]
+      for (const candidate of contest.candidates) {
         if (vote !== undefined) {
           if (candidateWasVotedFor(candidate, vote)) {
             binaryString.concat('1')
@@ -68,7 +71,7 @@ function encodeVotesAsBinaryString(
 
 function binarySubstringTo8BitNum(chunk: string): number {
   var tempChunk = chunk
-  var paddingLength = 8 - chunk.length
+  const paddingLength = 8 - chunk.length
   if (chunk.length < 8) {
     for (let i = 0; i < paddingLength; i++) {
       tempChunk = tempChunk.concat('0')
@@ -79,8 +82,8 @@ function binarySubstringTo8BitNum(chunk: string): number {
 }
 
 function binaryStringToUint8Array(binaryString: string): Uint8Array {
-  var numBytes = 0
-  var remainder = binaryString.length % 8
+  var numBytes
+  const remainder = binaryString.length % 8
   if (remainder === 0) {
     numBytes = binaryString.length
   } else {
@@ -97,61 +100,40 @@ function binaryStringToUint8Array(binaryString: string): Uint8Array {
   return array
 }
 
-const zeroIV = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+function combineUint8Arrays(
+  array1: Uint8Array,
+  array2: Uint8Array
+): Uint8Array {
+  var newArray = new Uint8Array(array1.length + array2.length)
+  newArray.set(array1)
+  newArray.set(array2, array1.length)
+  return newArray
+}
 
 export default async function generateQRCodeString(
   contests: Contests,
   votes: VotesDict,
-  sequenceNumber: number,
   timestamp: number,
   keyData: Uint8Array,
   authKeyData: Uint8Array
 ): Promise<string> {
-  var arrayHoldingTimestamp = binaryStringToUint8Array(timestamp.toString(2))
-  var arrayHoldingSeqeuenceNumber = binaryStringToUint8Array(
-    sequenceNumber.toString(2)
-  )
-  var arrayHoldingVotes = binaryStringToUint8Array(
+  const votesArray = binaryStringToUint8Array(
     encodeVotesAsBinaryString(contests, votes)
   )
-
-  var combinedLength =
-    arrayHoldingTimestamp.length +
-    arrayHoldingSeqeuenceNumber.length +
-    arrayHoldingVotes.length
-
-  var combinedArray = new Uint8Array(combinedLength)
-  combinedArray.set(arrayHoldingTimestamp, 0)
-  combinedArray.set(arrayHoldingSeqeuenceNumber, arrayHoldingTimestamp.length)
-  combinedArray.set(
-    arrayHoldingVotes,
-    arrayHoldingTimestamp.length + arrayHoldingSeqeuenceNumber.length
+  const timestampArray = binaryStringToUint8Array(
+    TIMESTAMP_PADDING + timestamp.toString(2)
   )
+  const dataTimestampArray = combineUint8Arrays(votesArray, timestampArray)
 
   try {
-    var key = await crypto.subtle.importKey('raw', keyData, 'AES-CBC', false, [
-      'encrypt',
-    ])
-
-    var encryptedArray = new Uint8Array(
-      await crypto.subtle.encrypt(
-        {
-          name: 'AES-CBC',
-          iv: zeroIV,
-        },
-        key,
-        combinedArray
-      )
+    const encryptionKey = await crypto.subtle.importKey(
+      'raw',
+      keyData,
+      'AES-CBC',
+      false,
+      ['encrypt']
     )
-
-    var authDataArrayLength =
-      encryptedArray.length + arrayHoldingTimestamp.length
-
-    var authDataArray = new Uint8Array(authDataArrayLength)
-    authDataArray.set(encryptedArray, 0)
-    authDataArray.set(arrayHoldingTimestamp, encryptedArray.length)
-
-    var authKey = await crypto.subtle.importKey(
+    const authKey = await crypto.subtle.importKey(
       'raw',
       authKeyData,
       'AES-CBC',
@@ -159,28 +141,38 @@ export default async function generateQRCodeString(
       ['encrypt']
     )
 
-    var authEncryptedArray = new Uint8Array(
+    const encryptedArray = new Uint8Array(
+      await crypto.subtle.encrypt(
+        {
+          name: 'AES-CBC',
+          iv: zeroIV,
+        },
+        encryptionKey,
+        dataTimestampArray
+      )
+    )
+
+    const cbcMacInputArray = combineUint8Arrays(encryptedArray, timestampArray)
+
+    const cbcMacOutputArray = new Uint8Array(
       await crypto.subtle.encrypt(
         {
           name: 'AES-CBC',
           iv: zeroIV,
         },
         authKey,
-        authDataArray
+        cbcMacInputArray
       )
     )
 
-    var cbcMAC = authEncryptedArray.subarray(
-      authEncryptedArray.length - 17,
-      authEncryptedArray.length
+    const cbcMAC = cbcMacOutputArray.subarray(
+      cbcMacOutputArray.length - 17,
+      cbcMacOutputArray.length
     )
 
-    var finalArray = new Uint8Array(authDataArray.length + cbcMAC.length)
-    finalArray.set(authDataArray, 0)
-    finalArray.set(cbcMAC, authDataArray.length)
+    const payload = combineUint8Arrays(cbcMacInputArray, cbcMAC)
 
-    var base64string = base64js.fromByteArray(finalArray)
-    return base64string
+    return base64js.fromByteArray(payload)
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log('error encrypting array' + err.toString())

@@ -241,7 +241,6 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
     generateQRCodeString(
       this.context.contests,
       this.context.votes,
-      1, // FIXME i neeed to be a seunce number not a constant
       Date.now(),
       keyData,
       authKeyData
