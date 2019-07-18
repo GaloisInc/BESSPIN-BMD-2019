@@ -13,6 +13,8 @@ import {
 
 const TIMESTAMP_PADDING = '0000000' // 7 binary string 0's to prepend to the 41 bit binary string that is the current unix time in milliseconds so that the timestamp becomes a clean 6 bytes
 const zeroIV = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+const TIMEOUT_MILLISECONDS = 10000
+const SEPERATOR = '+'
 
 function isCandidateVote(vote: Vote): vote is CandidateVote {
   return Array.isArray(vote)
@@ -113,15 +115,28 @@ function combineUint8Arrays(
 export default async function generateQRCodeString(
   contests: Contests,
   votes: VotesDict,
-  timestamp: number,
+  timestamp: Date,
   keyData: Uint8Array,
   authKeyData: Uint8Array
 ): Promise<string> {
+  timestamp.setTime(timestamp.getTime() + TIMEOUT_MILLISECONDS)
+  var comparisonTimestamp =
+    timestamp.getUTCFullYear().toString() +
+    SEPERATOR +
+    timestamp.getUTCMonth().toString() +
+    SEPERATOR +
+    timestamp.getUTCDate().toString() +
+    SEPERATOR +
+    timestamp.getUTCHours().toString() +
+    SEPERATOR +
+    timestamp.getUTCMinutes().toString()
+  const comparisonTimestampArray = new TextEncoder().encode(comparisonTimestamp)
+
   const votesArray = binaryStringToUint8Array(
     encodeVotesAsBinaryString(contests, votes)
   )
   const timestampArray = binaryStringToUint8Array(
-    TIMESTAMP_PADDING + timestamp.toString(2)
+    TIMESTAMP_PADDING + timestamp.getTime().toString(2)
   )
   const dataTimestampArray = combineUint8Arrays(votesArray, timestampArray)
 
@@ -152,7 +167,19 @@ export default async function generateQRCodeString(
       )
     )
 
-    const cbcMacInputArray = combineUint8Arrays(encryptedArray, timestampArray)
+    const cbcMacInputArray = combineUint8Arrays(
+      comparisonTimestampArray,
+      encryptedArray
+    )
+
+    const cbcMacPadding = new Uint8Array(
+      16 - (cbcMacInputArray.length % 16)
+    ).fill(0)
+
+    const paddedCbcMacInputArray = combineUint8Arrays(
+      cbcMacInputArray,
+      cbcMacPadding
+    )
 
     const cbcMacOutputArray = new Uint8Array(
       await crypto.subtle.encrypt(
@@ -161,18 +188,21 @@ export default async function generateQRCodeString(
           iv: zeroIV,
         },
         authKey,
-        cbcMacInputArray
+        paddedCbcMacInputArray
       )
     )
 
     const cbcMAC = cbcMacOutputArray.subarray(
-      cbcMacOutputArray.length - 17,
-      cbcMacOutputArray.length
+      cbcMacOutputArray.length - 33,
+      cbcMacOutputArray.length - 17
     )
 
-    const payload = combineUint8Arrays(cbcMacInputArray, cbcMAC)
-
-    return base64js.fromByteArray(payload)
+    const base64InputArray = combineUint8Arrays(encryptedArray, cbcMAC)
+    const result =
+      comparisonTimestamp + SEPERATOR + base64js.fromByteArray(base64InputArray)
+    // eslint-disable-next-line no-console
+    console.log(result)
+    return result
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log('error encrypting array' + err.toString())

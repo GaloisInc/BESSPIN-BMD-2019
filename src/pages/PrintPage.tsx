@@ -241,7 +241,7 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
     generateQRCodeString(
       this.context.contests,
       this.context.votes,
-      Date.now(),
+      new Date(),
       keyData,
       authKeyData
     ).then(value => {
