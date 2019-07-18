@@ -27,7 +27,7 @@
 - `base64-string`
   - = base64( `encrypted-block` # `cbc-mac`)
 - `encrypted-block`
-  - = AES( `timestamp` # `votes` )
+  - = AES( `votes` # `timestamp` )
   -
 - `timestamp`
   - = Unix time in milliseconds as an unsigned integer
@@ -59,13 +59,14 @@ Consider the following election structure:
   - George
   - Harry
 
-The encoding would be a binary array
+The encoding would be a binary array where each candidate is represented by a
+bit in the array
 
 ```
-[Alice, Bob, Charles, David, Earl, Frank,
+[Alice, Bob, Charles, David, Earl, Frank, George, Harry]
 ```
 
-George, Harry] where ballot encoding that votes for Bob, Frank would be:
+where a sample concrete ballot that votes for Bob and Frank would be:
 
 ```
 [0, 1, 0, 0, 0, 1, 0, 0]
