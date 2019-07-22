@@ -7,7 +7,7 @@
 #### where
 
 - `comparison-timestamp`
-  - = `year` ":" `month` ":" `day` ":" `hour` ":" `minute`
+  - = `year` "+" `month` "+" `day` "+" `hour` "+" `minute`
   - 12 bytes
 - `year`
   - = 4 ascii characters representing the year
