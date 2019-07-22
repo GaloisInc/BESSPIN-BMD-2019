@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as base64js from 'base64-js'
 import {
   Candidate,
@@ -14,7 +15,8 @@ import {
 const TIMESTAMP_PADDING = '0000000' // 7 binary string 0's to prepend to the 41 bit binary string that is the current unix time in milliseconds so that the timestamp becomes a clean 6 bytes
 const zeroIV = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 const TIMEOUT_MILLISECONDS = 10000
-const SEPERATOR = '+'
+const SEPARATOR = '+'
+const B64_SEPARATOR = ':'
 
 function isCandidateVote(vote: Vote): vote is CandidateVote {
   return Array.isArray(vote)
@@ -49,11 +51,13 @@ function encodeVotesAsBinaryString(
   contests: Contests,
   votes: VotesDict
 ): string {
+  console.log('contests=', contests)
+  console.log('votes=', votes)
   var binaryString = ''
-  for (const contest of contests) {
+  for (var contest of contests) {
     if (isCandidateContest(contest)) {
-      const vote = votes[contest.id]
-      for (const candidate of contest.candidates) {
+      var vote = votes[contest.id]
+      for (var candidate of contest.candidates) {
         if (vote !== undefined) {
           if (candidateWasVotedFor(candidate, vote)) {
             binaryString.concat('1')
@@ -87,9 +91,9 @@ function binaryStringToUint8Array(binaryString: string): Uint8Array {
   var numBytes
   const remainder = binaryString.length % 8
   if (remainder === 0) {
-    numBytes = binaryString.length
+    numBytes = binaryString.length / 8
   } else {
-    numBytes = binaryString.length + 1
+    numBytes = binaryString.length / 8 + 1
   }
   var array = new Uint8Array(numBytes)
 
@@ -112,6 +116,21 @@ function combineUint8Arrays(
   return newArray
 }
 
+function padForAES(array: Uint8Array): Uint8Array {
+  if (array.length % 16 !== 0) {
+    const padding = new Uint8Array(16 - (array.length % 16)).fill(0)
+    const result = combineUint8Arrays(array, padding)
+    return result
+  } else {
+    return array
+  }
+}
+
+// The fixed width is 2
+function fixedWidthNumString(number: number): string {
+  return ('0' + number.toString()).slice(-2)
+}
+
 export default async function generateQRCodeString(
   contests: Contests,
   votes: VotesDict,
@@ -122,23 +141,34 @@ export default async function generateQRCodeString(
   timestamp.setTime(timestamp.getTime() + TIMEOUT_MILLISECONDS)
   var comparisonTimestamp =
     timestamp.getUTCFullYear().toString() +
-    SEPERATOR +
-    timestamp.getUTCMonth().toString() +
-    SEPERATOR +
-    timestamp.getUTCDate().toString() +
-    SEPERATOR +
-    timestamp.getUTCHours().toString() +
-    SEPERATOR +
-    timestamp.getUTCMinutes().toString()
+    SEPARATOR +
+    fixedWidthNumString(timestamp.getUTCMonth()) +
+    SEPARATOR +
+    fixedWidthNumString(timestamp.getUTCDate()) +
+    SEPARATOR +
+    fixedWidthNumString(timestamp.getUTCHours()) +
+    SEPARATOR +
+    fixedWidthNumString(timestamp.getUTCMinutes())
   const comparisonTimestampArray = new TextEncoder().encode(comparisonTimestamp)
+  console.log('comparisonTimestampArray=', comparisonTimestampArray)
+  console.log(
+    'decoded comparisonTimestampArray=',
+    new TextDecoder().decode(comparisonTimestampArray)
+  )
 
+  console.log('votes bin string=', encodeVotesAsBinaryString(contests, votes))
   const votesArray = binaryStringToUint8Array(
     encodeVotesAsBinaryString(contests, votes)
   )
+  console.log('votesArray=', votesArray)
   const timestampArray = binaryStringToUint8Array(
     TIMESTAMP_PADDING + timestamp.getTime().toString(2)
   )
-  const dataTimestampArray = combineUint8Arrays(votesArray, timestampArray)
+  console.log('timestampArray=', timestampArray)
+  const dataTimestampArray = padForAES(
+    combineUint8Arrays(votesArray, timestampArray)
+  )
+  console.log('dataTimestampArray=', dataTimestampArray)
 
   try {
     const encryptionKey = await crypto.subtle.importKey(
@@ -156,7 +186,7 @@ export default async function generateQRCodeString(
       ['encrypt']
     )
 
-    const encryptedArray = new Uint8Array(
+    const encryptedArrayWithPadding = new Uint8Array(
       await crypto.subtle.encrypt(
         {
           name: 'AES-CBC',
@@ -166,20 +196,22 @@ export default async function generateQRCodeString(
         dataTimestampArray
       )
     )
+    console.log('encryptedArrayWithPadding=', encryptedArrayWithPadding)
+
+    const encryptedArray = encryptedArrayWithPadding.subarray(
+      0,
+      encryptedArrayWithPadding.length - 16
+    )
+    console.log('encryptedArray=', encryptedArray)
 
     const cbcMacInputArray = combineUint8Arrays(
       comparisonTimestampArray,
       encryptedArray
     )
+    console.log('cbcMacInputArray=', cbcMacInputArray)
 
-    const cbcMacPadding = new Uint8Array(
-      16 - (cbcMacInputArray.length % 16)
-    ).fill(0)
-
-    const paddedCbcMacInputArray = combineUint8Arrays(
-      cbcMacInputArray,
-      cbcMacPadding
-    )
+    const paddedCbcMacInputArray = padForAES(cbcMacInputArray)
+    console.log('paddedCbcMacInputArray=', paddedCbcMacInputArray)
 
     const cbcMacOutputArray = new Uint8Array(
       await crypto.subtle.encrypt(
@@ -191,20 +223,23 @@ export default async function generateQRCodeString(
         paddedCbcMacInputArray
       )
     )
+    console.log('cbcMacOutputArray=', cbcMacOutputArray)
 
     const cbcMAC = cbcMacOutputArray.subarray(
-      cbcMacOutputArray.length - 33,
-      cbcMacOutputArray.length - 17
+      cbcMacOutputArray.length - 32,
+      cbcMacOutputArray.length - 16
     )
+    console.log('cbcMAC=', cbcMAC)
 
     const base64InputArray = combineUint8Arrays(encryptedArray, cbcMAC)
     const result =
-      comparisonTimestamp + SEPERATOR + base64js.fromByteArray(base64InputArray)
-    // eslint-disable-next-line no-console
+      comparisonTimestamp +
+      B64_SEPARATOR +
+      base64js.fromByteArray(base64InputArray)
+
     console.log(result)
     return result
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.log('error encrypting array' + err.toString())
     return 'encryption error'
   }
