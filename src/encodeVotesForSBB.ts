@@ -55,17 +55,25 @@ function encodeVotesAsBinaryString(
   console.log('votes=', votes)
   var binaryString = ''
   for (var contest of contests) {
+    console.log('var contest=', contest)
     if (isCandidateContest(contest)) {
+      console.log('isCandidateContest=', isCandidateContest(contest))
       var vote = votes[contest.id]
+      console.log('vote=', vote)
       for (var candidate of contest.candidates) {
+        console.log('candidate=', candidate)
         if (vote !== undefined) {
+          console.log('vote !== undefined')
           if (candidateWasVotedFor(candidate, vote)) {
-            binaryString.concat('1')
+            console.log('candidate was voted for')
+            binaryString = binaryString.concat('1')
           } else {
-            binaryString.concat('0')
+            console.log('candidate was not voted for')
+            binaryString = binaryString.concat('0')
           }
         } else {
-          binaryString.concat('0')
+          console.log('vote === undefined')
+          binaryString = binaryString.concat('0')
         }
       }
     } else {
@@ -126,9 +134,14 @@ function padForAES(array: Uint8Array): Uint8Array {
   }
 }
 
-// The fixed width is 2
-function fixedWidthNumString(number: number): string {
+function twoDigitNumString(number: number): string {
   return ('0' + number.toString()).slice(-2)
+}
+
+function uint8ArrayToB64(array: Uint8Array): string {
+  const rawString = base64js.fromByteArray(array)
+  const temp = rawString.replace(/\//, '_')
+  return temp.replace(/\+/, '-')
 }
 
 export default async function generateQRCodeString(
@@ -142,13 +155,13 @@ export default async function generateQRCodeString(
   var comparisonTimestamp =
     timestamp.getUTCFullYear().toString() +
     SEPARATOR +
-    fixedWidthNumString(timestamp.getUTCMonth()) +
+    twoDigitNumString(timestamp.getUTCMonth()) +
     SEPARATOR +
-    fixedWidthNumString(timestamp.getUTCDate()) +
+    twoDigitNumString(timestamp.getUTCDate()) +
     SEPARATOR +
-    fixedWidthNumString(timestamp.getUTCHours()) +
+    twoDigitNumString(timestamp.getUTCHours()) +
     SEPARATOR +
-    fixedWidthNumString(timestamp.getUTCMinutes())
+    twoDigitNumString(timestamp.getUTCMinutes())
   const comparisonTimestampArray = new TextEncoder().encode(comparisonTimestamp)
   console.log('comparisonTimestampArray=', comparisonTimestampArray)
   console.log(
@@ -233,9 +246,7 @@ export default async function generateQRCodeString(
 
     const base64InputArray = combineUint8Arrays(encryptedArray, cbcMAC)
     const result =
-      comparisonTimestamp +
-      B64_SEPARATOR +
-      base64js.fromByteArray(base64InputArray)
+      comparisonTimestamp + B64_SEPARATOR + uint8ArrayToB64(base64InputArray)
 
     console.log(result)
     return result
