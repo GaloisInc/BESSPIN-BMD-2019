@@ -1,0 +1,30 @@
+Copy the full BMDAPp folder to the C drive, eg: C:\BMDApp
+Ensure node.js is installed and http-server has been installed via npm
+
+Open command prompt as an administrator(!)
+ cd to this directory\nssm ("cd C:\BMDApp\BMD\nssm" )
+
+Via Command Line, run:
+   nssm install EG_BMD_Webservice
+
+Via UI, copy/paste these 3 fields:
+[Note! Replace the username below with the admin user that installed npm in "Args" below]
+  Path: C:\Program Files\nodejs\node.exe
+  Startup: C:\BMDApp\BMD
+  Args: C:\Users\AdminUser\AppData\Roaming\npm\node_modules\http-server\bin\http-server C:\BMDApp\BMD\build -p 7777
+  [click Install Service, OK confirmation message]
+
+Via Command Line, run:
+   nssm start EG_BMD_Webservice
+   (look for completed successfully confirmation)
+
+Notes-
+
+* Issue with the service, run manually in a pinch? Remove the service, and double click the backup/RunWebServer.bat file
+
+Path: [Path to Node.exe]
+Startup: Parent to static Files
+Args: [Path to http-server binary] [path to static bmd web files] [port]
+
+
+Need to delete the service? Command Line: "nssm remove EG_EncryptionServer"

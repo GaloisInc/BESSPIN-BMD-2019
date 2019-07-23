@@ -1,0 +1,33 @@
+Copy the full BMDApp folder to the C drive, eg: C:\BMDApp
+Ensure the Java SDK is installed. Confirm path to exe below.
+
+Open command prompt as an Administrator (!)
+  cd to this directory\nssm ("cd C:\BMDApp\Encryption\nssm" )
+
+Via Command Line, run:
+   nssm install EG_EncryptionServer
+
+Via UI, copy/paste these 3 fields:
+  Path: C:\Program Files\Java\jdk-12.0.1\bin\java.exe
+  Startup: C:\BMDApp\Encryption
+  Args: -jar tallyServer.jar election.json
+  [click OK, confirmation message]
+
+Via Command Line, run:
+   nssm start EG_EncryptionServer
+
+Via start menu, search for "Services" (services.msc)
+Look up "EG_EncryptionServer' and ensure the service is Started. This only needs to be done once, and will start up on boot.
+
+
+
+
+Notes-
+* The trackers.csv and ballots.csv files will be located at this directory, eg: C:\BMDApp\Encryption\trackers.csv)
+* Need to delete the service? Command Line: "nssm remove EG_EncryptionServer"
+* Issue with the service, run manually in a pinch? Remove the service, and double click the backup/MnaualRunJavaServer.bat file. Leave cmd window open, let run.
+
+* NSSM Descriptions:
+  Path: [Path to java.exe]
+  Startup: Parent to static Files
+  Args: [Path to http-server binary] [path to static bmd web files] [port]

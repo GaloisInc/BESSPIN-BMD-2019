@@ -1,0 +1,5 @@
+1. Unpack this zip/folder and place in C:\BMDApp\UploadFiles
+2. Run UploadFiles.exe
+
+Notes:
+upload url and csv file location is in the config xml

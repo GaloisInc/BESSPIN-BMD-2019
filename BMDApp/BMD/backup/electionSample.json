@@ -1,0 +1,178 @@
+{
+  "title": "2019 Aspen Security Forum",
+  "demo": true,
+  "state": "State of Hamilton",
+  "county": {
+    "id": "asf-2019",
+    "name": "Franklin County"
+  },
+  "date": "Wednesday, July 17, 2019",
+  "ballotTrackerConfig": {
+    "trackerType": "electionguard",
+    "trackerSiteDisplay": "www.electionguard.vote",
+    "trackerUrlTemplate": "https://www.electionguard.vote/track/<tracker_id>"
+  },
+  "districts": [
+    {
+      "id": "district-1",
+      "name": "District 1"
+    },
+    {
+      "id": "district-2",
+      "name": "District 2"
+    },
+    {
+      "id": "district-3",
+      "name": "District 3"
+    },
+    {
+      "id": "7",
+      "name": "District 7"
+    }
+  ],
+  "parties": [
+    {
+      "id": "0",
+      "name": "West Wing",
+      "abbrev": "WW"
+    },
+    {
+      "id": "1",
+      "name": "Veep",
+      "abbrev": "V"
+    },
+    {
+      "id": "2",
+      "name": "24",
+      "abbrev": "24"
+    },
+    {
+      "id": "3",
+      "name": "House of Cards",
+      "abbrev": "HC"
+    },
+    {
+      "id": "4",
+      "name": "Scandal",
+      "abbrev": "S"
+    },
+    {
+      "id": "5",
+      "name": "Madam Secretary",
+      "abbrev": "MS"
+    },
+    {
+      "id": "6",
+      "name": "Designated Survivor",
+      "abbrev": "DS"
+    }
+  ],
+  "contests": [
+    {
+      "id": "president",
+      "districtId": "district-1",
+      "type": "candidate",
+      "section": "United States",
+      "title": "US Television President of the United States",
+      "seats": 1,
+      "candidates": [
+        {
+          "id": "bartlet",
+          "name": "Josiah Bartlett",
+          "partyId": "0"
+        },
+        {
+          "id": "myer",
+          "name": "Selina Myer",
+          "partyId": "1"
+        },
+        {
+          "id": "palmer",
+          "name": "David Palmer",
+          "partyId": "2"
+        },
+        {
+          "id": "underwood",
+          "name": "Clare Underwood",
+          "partyId": "3"
+        },
+        {
+          "id": "grant",
+          "name": "Fitz Grant",
+          "partyId": "4"
+        },
+        {
+          "id": "dalton",
+          "name": "Conrad Dalton",
+          "partyId": "5"
+        },
+        {
+          "id": "kirkman",
+          "name": "Tom Kirkman",
+          "partyId": "6"
+        }
+      ],
+      "allowWriteIns": false
+    },
+    {
+      "id": "measure-no-election-interference",
+      "districtId": "district-1",
+      "type": "yesno",
+      "section": "Aspen Security Forum",
+      "shortTitle": "No Election Interference",
+      "title": "No Interference with Democratic Elections",
+      "description": "Should countries declare electoral processes \"off limits\" for offensive cyber action?"
+    },
+    {
+      "id": "measure-gray-market-vulnerabilities",
+      "districtId": "district-1",
+      "type": "yesno",
+      "section": "Aspen Security Forum",
+      "shortTitle": "Working with Gray Markets",
+      "title": "Purchase Gray Market Vulnerabilities",
+      "description": "Is it okay for governments and tech companies to buy zero-day vulnerabilities from grey market brokers?"
+    },
+    {
+      "id": "measure-no-grid-interference",
+      "districtId": "district-1",
+      "type": "yesno",
+      "section": "Aspen Security Forum",
+      "shortTitle": "No Electric Grid Interference",
+      "title": "No Interference With Electrical Grid",
+      "description": "Should countries declare critical infrastructure such as energy grids and water supplies \"off limits\" for offensive cyber action?"
+    }
+  ],
+  "precincts": [
+    {
+      "id": "23",
+      "name": "Aspen Security Forum Demo"
+    },
+    {
+      "id": "21",
+      "name": "North Springfield"
+    },
+    {
+      "id": "20",
+      "name": "South Springfield"
+    }
+  ],
+  "ballotStyles": [
+    {
+      "id": "12",
+      "precincts": ["23", "21"],
+      "districts": ["district-1", "district-2"]
+    },
+    {
+      "id": "5",
+      "precincts": ["21"],
+      "districts": ["district-1"]
+    },
+    {
+      "id": "7C",
+      "partyId": "3",
+      "precincts": ["20"],
+      "districts": ["7"]
+    }
+  ],
+  "sealURL": "/seals/EG_Seal.svg"
+}

@@ -1,0 +1,25 @@
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}main{display:block}h1{font-size:2em;margin:.67em 0}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent}abbr[title]{border-bottom:none;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:.35em .75em .625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details{display:block}summary{display:list-item}[hidden],template{display:none}
+
+/*!
+ * 
+ *   react-simple-keyboard v1.22.3
+ *   https://github.com/hodgef/react-simple-keyboard
+ * 
+ *   Copyright (c) Francisco Hodge (https://github.com/hodgef)
+ * 
+ *   This source code is licensed under the MIT license found in the
+ *   LICENSE file in the root directory of this source tree.
+ *   
+ */
+/*!
+ * 
+ *   simple-keyboard v2.21.4
+ *   https://github.com/hodgef/simple-keyboard
+ * 
+ *   Copyright (c) Francisco Hodge (https://github.com/hodgef)
+ * 
+ *   This source code is licensed under the MIT license found in the
+ *   LICENSE file in the root directory of this source tree.
+ *   
+ */body,html{margin:0;padding:0}.simple-keyboard{font-family:HelveticaNeue-Light,Helvetica Neue Light,Helvetica Neue,Helvetica,Arial,Lucida Grande,sans-serif;width:100%;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;box-sizing:border-box;overflow:hidden;touch-action:manipulation}.simple-keyboard .hg-row{display:flex}.simple-keyboard .hg-row:not(:last-child){margin-bottom:5px}.simple-keyboard .hg-row .hg-button-container,.simple-keyboard .hg-row .hg-button:not(:last-child){margin-right:5px}.simple-keyboard .hg-row>div:last-child{margin-right:0}.simple-keyboard .hg-row .hg-button-container{display:flex}.simple-keyboard .hg-button{display:inline-block;flex-grow:1;cursor:pointer}.simple-keyboard .hg-button span{pointer-events:none}.simple-keyboard.hg-theme-default{background-color:rgba(0,0,0,.1);padding:5px;border-radius:5px}.simple-keyboard.hg-theme-default .hg-button{box-shadow:0 0 3px -1px rgba(0,0,0,.3);height:40px;border-radius:5px;box-sizing:border-box;padding:5px;background:#fff;border-bottom:1px solid #b5b5b5;cursor:pointer;display:flex;align-items:center;justify-content:center}.simple-keyboard button.hg-button{border-width:0;outline:0;font-size:inherit}.simple-keyboard.hg-theme-default:not(.hg-touch-events) .hg-button:active{background:#e4e4e4}.simple-keyboard.hg-theme-default.hg-layout-numeric .hg-button{width:33.3%;height:60px;align-items:center;display:flex;justify-content:center}.simple-keyboard.hg-theme-default .hg-button.hg-button-numpadadd,.simple-keyboard.hg-theme-default .hg-button.hg-button-numpadenter{height:85px}.simple-keyboard.hg-theme-default .hg-button.hg-button-numpad0{width:105px}.simple-keyboard.hg-theme-default .hg-button.hg-button-com{max-width:85px}.simple-keyboard.hg-theme-default .hg-button.hg-standardBtn.hg-button-at{max-width:45px}.simple-keyboard.hg-theme-default .hg-button.hg-selectedButton{background:rgba(5,25,70,.53);color:#fff}.simple-keyboard.hg-theme-default .hg-button.hg-standardBtn[data-skbtn=".com"]{max-width:82px}.simple-keyboard.hg-theme-default .hg-button.hg-standardBtn[data-skbtn="@"]{max-width:60px}
+/*# sourceMappingURL=2.f654d9d3.chunk.css.map */

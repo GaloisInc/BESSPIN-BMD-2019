@@ -1,0 +1,19 @@
+
+Open CMD to this directory
+
+nssm install EG_BMD_Webservice
+
+In UI -- 
+Path: C:\Program Files\nodejs\node.exe
+Startup: C:\bmdlocal 
+Args: C:\Users\egadmin\AppData\Roaming\npm\node_modules\http-server\bin\http-server C:\bmdlocal\build -p 1112
+
+nssm start
+
+
+Notes-
+Path: [Path to Node.exe]
+Startup: Parent to static Files
+Args: [Path to http-server] [path to static files] [port]
+
+
