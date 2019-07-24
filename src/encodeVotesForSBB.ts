@@ -140,8 +140,8 @@ function twoDigitNumString(number: number): string {
 
 function uint8ArrayToB64(array: Uint8Array): string {
   const rawString = base64js.fromByteArray(array)
-  const temp = rawString.replace(/\//, '_')
-  return temp.replace(/\+/, '-')
+  const temp = rawString.replace(/\//gi, '_')
+  return temp.replace(/\+/gi, '-')
 }
 
 export default async function generateQRCodeString(
