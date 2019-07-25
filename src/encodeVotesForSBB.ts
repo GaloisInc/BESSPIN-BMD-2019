@@ -14,7 +14,7 @@ import {
 
 const TIMESTAMP_PADDING = '0000000' // 7 binary string 0's to prepend to the 41 bit binary string that is the current unix time in milliseconds so that the timestamp becomes a clean 6 bytes
 const zeroIV = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-const TIMEOUT_MILLISECONDS = 10000
+const TIMEOUT_MILLISECONDS = 180000
 const SEPARATOR = '+'
 const B64_SEPARATOR = ':'
 
