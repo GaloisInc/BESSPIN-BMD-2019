@@ -58,7 +58,7 @@ const QRCodeContainer = styled.div`
   flex-direction: row;
   align-self: flex-end;
   border-bottom: 0;
-  max-width: 50%;
+  max-width: 17%;
   padding: 0.5rem;
   & > div:first-child {
     margin-right: 0.25rem;
