@@ -155,7 +155,7 @@ export default async function generateQRCodeString(
   var comparisonTimestamp =
     timestamp.getUTCFullYear().toString() +
     SEPARATOR +
-    twoDigitNumString(timestamp.getUTCMonth()) +
+    twoDigitNumString(timestamp.getUTCMonth() + 1) +
     SEPARATOR +
     twoDigitNumString(timestamp.getUTCDate()) +
     SEPARATOR +
