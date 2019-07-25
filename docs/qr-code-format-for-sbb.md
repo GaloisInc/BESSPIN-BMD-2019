@@ -28,7 +28,7 @@
   - = base64( `encrypted-block` # `cbc-mac`)
 - `encrypted-block`
   - = AES( `votes` # `timestamp` )
-  -
+  - 16 bytes
 - `timestamp`
   - = Unix time in milliseconds as an unsigned integer
   - 6 bytes
