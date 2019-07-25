@@ -32,7 +32,6 @@ const Header = styled.div`
   flex-direction: row;
   align-items: center;
   border-bottom: 0.2rem solid #000000;
-  height: 1.15in;
   & > .seal {
     margin: 0.25rem 0;
     width: 1in;
@@ -58,13 +57,11 @@ const QRCodeContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-self: flex-end;
-  border: 0.2rem solid #000000;
   border-bottom: 0;
   max-width: 50%;
-  padding: 0.25rem;
+  padding: 0.5rem;
   & > div:first-child {
     margin-right: 0.25rem;
-    width: 1in;
   }
   & > div:last-child {
     display: flex;
