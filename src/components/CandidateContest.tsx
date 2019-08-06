@@ -142,9 +142,9 @@ const Choice = styled('label')<{ isSelected: boolean }>`
   box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.14),
     0 0.1875rem 0.0625rem -0.125rem rgba(0, 0, 0, 0.12),
     0 0.0625rem 0.3125rem 0 rgba(0, 0, 0, 0.2);
-  background: ${({ isSelected }) => (isSelected ? '#028099' : '#FFFFFF')};
+  background: ${({ isSelected }) => (isSelected ? '#028099' : '#d3d3d3')};
   cursor: pointer;
-  color: ${({ isSelected }) => (isSelected ? '#FFFFFF' : undefined)};
+  color: ${({ isSelected }) => (isSelected ? '#FFFFFF' : '#09535f')};
   transition: background 0.25s, color 0.25s;
   button& {
     text-align: left;

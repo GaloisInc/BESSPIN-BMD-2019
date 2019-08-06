@@ -106,12 +106,12 @@ const Contest = styled(LinkButton)`
   box-shadow: 0 0.125rem 0.125rem 0 rgba(0, 0, 0, 0.14),
     0 0.1875rem 0.0625rem -0.125rem rgba(0, 0, 0, 0.12),
     0 0.0625rem 0.3125rem 0 rgba(0, 0, 0, 0.2);
-  background: #ffffff;
+  background: #028099;
   width: 100%; /* reset Button default here at component rather than pass 'fullWidth' param. */
   padding: 0.375rem 0.5rem;
   text-decoration: inherit;
   white-space: normal; /* reset Button default */
-  color: inherit;
+  color: #ffffff;
   button& {
     cursor: pointer;
     text-align: left;

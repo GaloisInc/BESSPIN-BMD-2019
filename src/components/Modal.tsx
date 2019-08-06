@@ -18,6 +18,7 @@ const ModalContent = styled('div')<ModalContentInterface>`
     centerContent ? 'center' : undefined};
   overflow: auto;
   padding: 1rem 0.5rem;
+  color: #09535f;
   @media (min-width: 480px) {
     padding: 2rem 1rem;
   }

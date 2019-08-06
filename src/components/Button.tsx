@@ -21,9 +21,7 @@ const buttonStyles = css<Props>`
   border-radius: 0.25rem;
   box-sizing: border-box;
   background: ${({ danger = false, primary = false }) =>
-    (danger && 'red') ||
-    (primary && 'rgb(71, 167, 75)') ||
-    'rgb(211, 211, 211)'};
+    (danger && 'red') || (primary && '#ffb029') || 'rgb(211, 211, 211)'};
   cursor: ${({ disabled = false }) => (disabled ? undefined : 'pointer')};
   width: ${({ fullWidth = false }) => (fullWidth ? '100%' : undefined)};
   padding: ${({ big = false, small = false }) =>
@@ -32,7 +30,7 @@ const buttonStyles = css<Props>`
   color: ${({ disabled = false, danger = false, primary = false }) =>
     (disabled && 'rgb(169, 169, 169)') ||
     (danger && '#FFFFFF') ||
-    (primary && '#FFFFFF') ||
+    (primary && '#09535f') ||
     'black'};
   font-size: ${({ big = false }) => (big ? '1.25rem' : undefined)};
 `
