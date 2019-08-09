@@ -1,0 +1,193 @@
+{
+  "title": "DEFCON 27",
+  "state": "Nevada",
+  "county": {
+    "id": "paradise",
+    "name": "Paradise"
+  },
+  "date": "Thursday, August 8, 2019",
+  "districts": [
+    {
+      "id": "district-1",
+      "name": "District 1"
+    }
+  ],
+  "parties": [
+    {
+      "id": "0",
+      "name": "",
+      "abbrev": "F"
+    },
+    {
+      "id": "1",
+      "name": "",
+      "abbrev": "P"
+    }
+  ],
+  "contests": [
+    {
+      "id": "president",
+      "districtId": "district-1",
+      "type": "candidate",
+      "section": "United States",
+      "title": "Favorite Star Wars Movie",
+      "seats": 1,
+      "candidates": [
+        {
+          "id": "1",
+          "name": "A New Hope",
+          "partyId": "0"
+        },
+        {
+          "id": "2",
+          "name": "The Empire Strikes Back",
+          "partyId": "0"
+        },
+        {
+          "id": "3",
+          "name": "Return of the Jedi",
+          "partyId": "0"
+        },
+        {
+          "id": "4",
+          "name": "The Force Awakens",
+          "partyId": "0"
+        },
+        {
+          "id": "5",
+          "name": "The Last Jedi",
+          "partyId": "0"
+        },
+        {
+          "id": "6",
+          "name": "Rogue One",
+          "partyId": "0"
+        },
+        {
+          "id": "7",
+          "name": "Solo",
+          "partyId": "0"
+        }
+      ],
+      "allowWriteIns": false
+    },
+    {
+      "id": "darpa vs",
+      "districtId": "district-1",
+      "type": "candidate",
+      "section": "United States",
+      "title": "Is DARPA Building a Voting System",
+      "seats": 1,
+      "candidates": [
+        {
+          "id": "No",
+          "name": "No",
+          "partyId": "0"
+        },
+        {
+          "id": "heck",
+          "name": "Heck No",
+          "partyId": "1"
+        },
+        {
+          "id": "hell",
+          "name": "Hell No!",
+          "partyId": "0"
+        }
+      ],
+      "allowWriteIns": false
+    },
+    {
+      "id": "sandwich",
+      "districtId": "district-1",
+      "type": "candidate",
+      "section": "United States",
+      "title": "Is a hot dog a sandwich",
+      "seats": 1,
+      "candidates": [
+        {
+          "id": "yes",
+          "name": "Yes",
+          "partyId": "0"
+        },
+        {
+          "id": "no",
+          "name": "No",
+          "partyId": "1"
+        }
+      ],
+      "allowWriteIns": false
+    },
+    {
+      "id": "holy",
+      "districtId": "district-1",
+      "type": "candidate",
+      "section": "United States",
+      "title": "Tab Holy War",
+      "seats": 1,
+      "candidates": [
+        {
+          "id": "4",
+          "name": "4 spaces",
+          "partyId": "0"
+        },
+        {
+          "id": "2",
+          "name": "2 spaces",
+          "partyId": "1"
+        },
+        {
+          "id": "fib",
+          "name": "Fibonacci Indent with spaces",
+          "partyId": "1"
+        }
+      ],
+      "allowWriteIns": false
+    },
+    {
+      "id": "gif",
+      "districtId": "district-1",
+      "type": "candidate",
+      "section": "United States",
+      "title": "Correct Pronunciation of GIF",
+      "seats": 1,
+      "candidates": [
+        {
+          "id": "soft",
+          "name": "Soft G and in Gin",
+          "partyId": "0"
+        },
+        {
+          "id": "hard",
+          "name": "Hard G as in Gaffe",
+          "partyId": "1"
+        },
+        {
+          "id": "weird",
+          "name": "Weird as in Beige",
+          "partyId": "1"
+        },
+        {
+          "id": "flike",
+          "name": "F-like as in Enough",
+          "partyId": "1"
+        }
+      ],
+      "allowWriteIns": false
+    }
+  ],
+  "precincts": [
+    {
+      "id": "23",
+      "name": "Center Springfield"
+    }
+  ],
+  "ballotStyles": [
+    {
+      "id": "12",
+      "precincts": ["23"],
+      "districts": ["district-1"]
+    }
+  ],
+  "sealURL": "/seals/ssith-seal.png"
+}
