@@ -16,7 +16,7 @@ interface Props {
 
 const QRCode = ({ value }: Props) => (
   <ResponsiveSvgWrapper>
-    <QRCodeReact renderAs="svg" value={value} level="H" />
+    <QRCodeReact renderAs="svg" value={value} level="L" />
   </ResponsiveSvgWrapper>
 )
 

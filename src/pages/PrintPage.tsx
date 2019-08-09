@@ -3,8 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import styled from 'styled-components'
 import QRCode from '../components/QRCode'
 import { findPartyById } from '../utils/find'
-import { randomBase64 } from '../utils/random'
-import encodeVotes from '../encodeVotes'
+import generateQRCodeString from '../encodeVotesForSBB'
 
 import {
   Candidate,
@@ -33,7 +32,6 @@ const Header = styled.div`
   flex-direction: row;
   align-items: center;
   border-bottom: 0.2rem solid #000000;
-  height: 1.15in;
   & > .seal {
     margin: 0.25rem 0;
     width: 1in;
@@ -51,21 +49,15 @@ const Header = styled.div`
   }
 `
 
-const SealImage = styled.img`
-  max-width: 1in;
-`
-
 const QRCodeContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-self: flex-end;
-  border: 0.2rem solid #000000;
   border-bottom: 0;
-  max-width: 50%;
-  padding: 0.25rem;
+  max-width: 17%;
+  padding: 0.5rem;
   & > div:first-child {
     margin-right: 0.25rem;
-    width: 1in;
   }
   & > div:last-child {
     display: flex;
@@ -155,17 +147,101 @@ const YesNoContestResult = (props: {
     <NoSelection />
   )
 
+const keyData = new Uint8Array([
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+  0,
+  255,
+])
+
+const authKeyData = new Uint8Array([
+  70,
+  114,
+  111,
+  109,
+  32,
+  82,
+  117,
+  115,
+  115,
+  105,
+  97,
+  32,
+  119,
+  105,
+  116,
+  104,
+  32,
+  76,
+  111,
+  118,
+  101,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+])
+
 interface State {
   showConfirmModal: boolean
+  qrCodeDataString: string
 }
 
 class SummaryPage extends React.Component<RouteComponentProps, State> {
   public static contextType = BallotContext
   public state: State = {
     showConfirmModal: false,
+    qrCodeDataString: 'default',
   }
   public componentDidMount = () => {
     window.addEventListener('afterprint', this.resetBallot)
+
+    generateQRCodeString(
+      this.context.contests,
+      this.context.votes,
+      new Date(),
+      keyData,
+      authKeyData
+    ).then(value => {
+      this.setState({
+        qrCodeDataString: value,
+      })
+    })
   }
   public componentWillUnmount = () => {
     window.removeEventListener('afterprint', this.resetBallot)
@@ -191,26 +267,13 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
   }
   public render() {
     const {
-      ballotStyleId,
       contests,
-      election: {
-        seal,
-        sealURL,
-        parties,
-        title,
-        county,
-        state,
-        date,
-        bmdConfig,
-      },
-      precinctId,
+      election: { parties, title, county, state, date, bmdConfig },
       votes,
     } = this.context
     const { showHelpPage, showSettingsPage } = bmdConfig
 
-    const encodedVotes: string = encodeVotes(contests, votes)
-
-    const serialNumber: string = randomBase64(16)
+    // const encodedVotes: string = encodeVotes(contests, votes)
 
     return (
       <React.Fragment>
@@ -281,19 +344,6 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
         />
         <div aria-hidden="true" className="print-only">
           <Header>
-            {seal ? (
-              <div
-                className="seal"
-                // TODO: Sanitize the SVG content: https://github.com/votingworks/bmd/issues/99
-                dangerouslySetInnerHTML={{ __html: seal }} // eslint-disable-line react/no-danger
-              />
-            ) : sealURL ? (
-              <div className="seal">
-                <SealImage src={sealURL} alt="" />
-              </div>
-            ) : (
-              <React.Fragment />
-            )}
             <Prose className="ballot-header-content">
               <h2>Official Ballot</h2>
               <h3>{title}</h3>
@@ -304,25 +354,7 @@ class SummaryPage extends React.Component<RouteComponentProps, State> {
               </p>
             </Prose>
             <QRCodeContainer>
-              <QRCode
-                value={`${ballotStyleId}.${precinctId}.${encodedVotes}.${serialNumber}`}
-              />
-              <div>
-                <div>
-                  <div>
-                    <div>Ballot Style</div>
-                    <strong>{ballotStyleId}</strong>
-                  </div>
-                  <div>
-                    <div>Precinct Number</div>
-                    <strong>{precinctId}</strong>
-                  </div>
-                  <div>
-                    <div>Serial Number</div>
-                    <strong>{serialNumber}</strong>
-                  </div>
-                </div>
-              </div>
+              <QRCode value={`${this.state.qrCodeDataString}`} />
             </QRCodeContainer>
           </Header>
           <Content>

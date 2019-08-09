@@ -45,7 +45,7 @@ const StepCircle = styled.div<StepProps>`
   position: relative;
   border-radius: 50%;
   background: ${({ completed, current }) =>
-    completed ? '#ffffff' : current ? '#35809c' : '#c7d7df'};
+    completed ? '#c7d7df' : current ? '#ffb029' : '#c7d7df'};
   width: 100%;
   height: 0;
   padding-top: 100%;
@@ -59,7 +59,8 @@ const StepCircle = styled.div<StepProps>`
     width: 100%;
     height: 100%;
     text-align: center;
-    color: ${({ completed }) => (completed ? '#35809c' : '#ffffff')};
+    color: ${({ completed, current }) =>
+      completed ? '#35809c' : current ? '#09535f' : '#35809c'};
     font-size: 7vw;
     font-weight: 700;
     @media (min-width: 686px) {

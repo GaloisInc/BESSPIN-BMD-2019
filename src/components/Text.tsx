@@ -25,7 +25,7 @@ const iconStyles = css<Props>`
     margin-right: 0.25rem;
     border-radius: ${({ warningIcon }) => (warningIcon && '50%') || undefined};
     background: ${({ warningIcon, voteIcon }) =>
-      (warningIcon && 'darkorange') || (voteIcon && '#028099')};
+      (warningIcon && 'darkorange') || (voteIcon && '#063c3f')};
     width: 1rem;
     height: 1rem;
     vertical-align: middle;
